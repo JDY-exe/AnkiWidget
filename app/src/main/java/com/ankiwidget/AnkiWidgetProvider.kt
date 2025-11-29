@@ -111,7 +111,11 @@ class AnkiWidgetProvider : AppWidgetProvider() {
                 // Get review data from repository
                 val repository = AnkiRepository(context)
                 val reviewData = withContext(Dispatchers.IO) {
-                    repository.getReviewData(daysToShow, config.selectedDeckId)
+                    repository.getReviewData(
+                        daysToShow, 
+                        config.selectedDeckId,
+                        config.dayStartHour
+                    )
                 }
                 
                 // Get theme
@@ -196,13 +200,15 @@ class AnkiWidgetProvider : AppWidgetProvider() {
         }
         
         val selectedDeckName = prefs.getString("${WidgetConfig.KEY_DECK_NAME}$appWidgetId", null)
+        val dayStartHour = prefs.getInt("${WidgetConfig.KEY_DAY_START}$appWidgetId", 4)
         
         return WidgetConfig(
             widgetId = appWidgetId,
             themeName = prefs.getString("${WidgetConfig.KEY_THEME}$appWidgetId", "material_you") ?: "material_you",
             showStreak = prefs.getBoolean("${WidgetConfig.KEY_SHOW_STREAK}$appWidgetId", false),
             selectedDeckId = selectedDeckId,
-            selectedDeckName = selectedDeckName
+            selectedDeckName = selectedDeckName,
+            dayStartHour = dayStartHour
         )
     }
     

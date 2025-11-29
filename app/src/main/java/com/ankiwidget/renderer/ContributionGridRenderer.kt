@@ -23,38 +23,39 @@ class ContributionGridRenderer(
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         
-        val daysToShow = reviewData.size
         val rows = WidgetConstants.ROWS  // Always 7 rows (Mon-Sun)
-        
-        // Get today's info
         val today = LocalDate.now()
-        val todayDayOfWeek = today.dayOfWeek.value  // 1=Monday, 7=Sunday
         
-        // Calculate how many empty cells we need at the start to align with calendar week
-        // If today is Monday (1), we need 0 empty cells (today goes at top)
-        // If today is Tuesday (2), we need 1 empty cell (Monday empty, Tuesday at top)
-        // If today is Sunday (7), we need 6 empty cells (Mon-Sat empty, Sunday at top)
-        val emptyCellsInFirstColumn = todayDayOfWeek - 1
+        // Create a map of dates to review status for quick lookup
+        val reviewMap = reviewData.associateBy { it.date }
         
-        // Total cells we need to display = empty cells + actual data
-        val totalCells = emptyCellsInFirstColumn + daysToShow
-        val columns = ceil(totalCells / rows.toFloat()).toInt()
+        // Calculate the date range we're displaying
+        val oldestDate = reviewData.minByOrNull { it.date }?.date ?: today
+        val newestDate = today
+        
+        // Calculate how many weeks we need to display
+        // We need to go from the Monday of the week containing oldestDate
+        // to the Sunday of the week containing newestDate (today)
+        val startOfFirstWeek = oldestDate.minusDays((oldestDate.dayOfWeek.value - 1).toLong())  // Go back to Monday
+        val endOfLastWeek = newestDate.plusDays((7 - newestDate.dayOfWeek.value).toLong())  // Go forward to Sunday
+        
+        val totalDays = java.time.temporal.ChronoUnit.DAYS.between(startOfFirstWeek, endOfLastWeek).toInt() + 1
+        val columns = ceil(totalDays / rows.toFloat()).toInt()
         
         // Calculate optimal cell size to fill the available space
         val availableWidth = width
         val availableHeight = height
         
-        // Calculate cell size based on available space
         val cellWidth = availableWidth / columns
         val cellHeight = availableHeight / rows
         val cellSize = minOf(cellWidth, cellHeight)
         
-        // Spacing is proportional to cell size (increased for smaller dots)
+        // Spacing is proportional to cell size
         val spacing = (cellSize * 0.30f).toInt().coerceAtLeast(2)
         val dotSize = cellSize - spacing
-        val radius = dotSize / 2f // Radius for perfect circles
+        val radius = dotSize / 2f
         
-        // Calculate total grid size with new dimensions
+        // Calculate total grid size
         val totalGridWidth = (dotSize * columns) + (spacing * (columns - 1))
         val totalGridHeight = (dotSize * rows) + (spacing * (rows - 1))
         val startX = (width - totalGridWidth) / 2f
@@ -66,28 +67,22 @@ class ContributionGridRenderer(
             style = Paint.Style.FILL
         }
         
-        // Create a map of dates to review status for quick lookup
-        val reviewMap = reviewData.associateBy { it.date }
-        
-        // Draw grid column by column (oldest to newest)
+        // Draw grid column by column
         for (col in 0 until columns) {
             for (row in 0 until rows) {
-                val cellIndex = (col * rows) + row
+                // Calculate which date this cell represents
+                val dayIndex = (col * rows) + row
+                val date = startOfFirstWeek.plusDays(dayIndex.toLong())
                 
-                // Skip empty cells at the beginning
-                if (cellIndex < emptyCellsInFirstColumn) {
+                // Skip if this date is in the future
+                if (date.isAfter(newestDate)) {
                     continue
                 }
                 
-                // Calculate which day this cell represents
-                val dayIndex = cellIndex - emptyCellsInFirstColumn
-                if (dayIndex >= daysToShow) break
-                
-                // Calculate the date for this cell (counting backwards from today)
-                val date = today.minusDays((daysToShow - 1 - dayIndex).toLong())
+                // Get the review status for this date
+                val status = reviewMap[date]
                 
                 // Determine color based on review status
-                val status = reviewMap[date]
                 paint.color = when {
                     status == null -> theme.noDataColor
                     status.allReviewsCompleted -> theme.completedColor
@@ -113,10 +108,15 @@ class ContributionGridRenderer(
         val sortedData = reviewData.sortedByDescending { it.date }
         var streak = 0
         
-        for (day in sortedData) {
+        for ((index, day) in sortedData.withIndex()) {
             if (day.allReviewsCompleted) {
                 streak++
             } else {
+                // If the most recent day (today) is incomplete, don't break the streak yet.
+                // Just skip it and check if yesterday was complete.
+                if (index == 0) {
+                    continue
+                }
                 break
             }
         }

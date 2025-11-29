@@ -190,7 +190,8 @@ class WidgetConfigActivity : AppCompatActivity() {
             themeName = themeName,
             showStreak = binding.showStreakSwitch.isChecked,
             selectedDeckId = selectedDeckId,
-            selectedDeckName = selectedDeckName
+            selectedDeckName = selectedDeckName,
+            dayStartHour = 4 // Default to 4AM for now
         )
     }
     
@@ -215,6 +216,7 @@ class WidgetConfigActivity : AppCompatActivity() {
             } else {
                 remove("${WidgetConfig.KEY_DECK_NAME}$appWidgetId")
             }
+            putInt("${WidgetConfig.KEY_DAY_START}$appWidgetId", config.dayStartHour)
             apply()
         }
         

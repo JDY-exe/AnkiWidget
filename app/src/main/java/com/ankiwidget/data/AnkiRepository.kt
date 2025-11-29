@@ -4,7 +4,12 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.util.Log
+import com.ankiwidget.data.db.AppDatabase
+import com.ankiwidget.data.db.DailyProgress
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * Repository for accessing AnkiDroid review data via Content Provider
@@ -20,44 +25,68 @@ class AnkiRepository(private val context: Context) {
         private val SCHEDULE_URI = Uri.parse("content://$AUTHORITY/schedule")
     }
 
+    private val database by lazy { AppDatabase.getDatabase(context) }
+
     /**
      * Get review data for the specified number of days
-     * Currently only supports checking if reviews were done today
+     * Checks live status for today (respecting 4AM rule) and saves to DB
+     * Loads history from DB
      */
-    fun getReviewData(daysToShow: Int, selectedDeckId: Long? = null): List<DayReviewStatus> {
-        Log.d(TAG, "Getting review data for $daysToShow days (deck=${selectedDeckId ?: "ALL"})")
-        
-        // Check if AnkiDroid is installed
-        if (!isAnkiDroidInstalled()) {
-            Log.w(TAG, "AnkiDroid not installed, using mock data")
-            return generateMockData(daysToShow)
-        }
-        
-        // Check if we have the required permission
-        val hasPermission = context.checkSelfPermission("com.ichi2.anki.permission.READ_WRITE_DATABASE")
-        Log.d(TAG, "Permission check result: $hasPermission (GRANTED=${android.content.pm.PackageManager.PERMISSION_GRANTED})")
-        
-        if (hasPermission != android.content.pm.PackageManager.PERMISSION_GRANTED) {
-            Log.e(TAG, "❌ PERMISSION DENIED: com.ichi2.anki.permission.READ_WRITE_DATABASE")
-            return generateMockData(daysToShow)
-        }
-        
-        Log.d(TAG, "✓ Permission granted! Checking review status...")
-        
-        // Check if today's reviews are complete
-        val todayComplete = isReviewsComplete(selectedDeckId)
-        
-        // Generate status for all days
-        val today = LocalDate.now()
-        return (0 until daysToShow).map { i ->
-            val date = today.minusDays(i.toLong())
-            val isToday = i == 0
+    suspend fun getReviewData(daysToShow: Int, selectedDeckId: Long? = null, dayStartHour: Int = 4): List<DayReviewStatus> {
+        return withContext(Dispatchers.IO) {
+            Log.d(TAG, "Getting review data for $daysToShow days (deck=${selectedDeckId ?: "ALL"})")
             
-            DayReviewStatus(
-                date = date,
-                allReviewsCompleted = isToday && todayComplete,
-                reviewCount = if (isToday && todayComplete) 1 else 0
-            )
+            // Determine "today" based on 4AM rule
+            val now = LocalDateTime.now()
+            val today = if (now.hour < dayStartHour) now.minusDays(1).toLocalDate() else now.toLocalDate()
+            Log.d(TAG, "Current time: $now, Day starts at $dayStartHour:00 -> Today is $today")
+
+            // Check if today's reviews are complete (Live check)
+            val todayComplete = isReviewsComplete(selectedDeckId)
+            
+            // Save today's status to DB
+            val deckIdForDb = selectedDeckId ?: -1L
+            try {
+                database.dailyProgressDao().insertProgress(
+                    DailyProgress(
+                        date = today,
+                        deckId = deckIdForDb,
+                        isComplete = todayComplete
+                    )
+                )
+                Log.d(TAG, "Saved progress for $today (deck=$deckIdForDb): complete=$todayComplete")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save progress", e)
+            }
+            
+            // Fetch history from DB
+            val startDate = today.minusDays((daysToShow - 1).toLong())
+            val history = try {
+                database.dailyProgressDao().getHistory(startDate, today, deckIdForDb)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to load history", e)
+                emptyList()
+            }
+            val historyMap = history.associateBy { it.date }
+            
+            // Generate status for all days
+            (0 until daysToShow).map { i ->
+                val date = today.minusDays(i.toLong())
+                val isToday = date == today // Use calculated today
+                
+                // Use live data for today, DB data for history
+                val isComplete = if (isToday) {
+                    todayComplete
+                } else {
+                    historyMap[date]?.isComplete ?: false
+                }
+                
+                DayReviewStatus(
+                    date = date,
+                    allReviewsCompleted = isComplete,
+                    reviewCount = if (isComplete) 1 else 0
+                )
+            }
         }
     }
     
@@ -146,6 +175,13 @@ class AnkiRepository(private val context: Context) {
      * If selectedDeckId is provided, only check that specific deck
      */
     fun isReviewsComplete(selectedDeckId: Long? = null): Boolean {
+        // Check permission first
+        val hasPermission = context.checkSelfPermission("com.ichi2.anki.permission.READ_WRITE_DATABASE")
+        if (hasPermission != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            Log.w(TAG, "No permission to check reviews")
+            return false
+        }
+        
         var cursor: Cursor? = null
         var allClear = true
         var totalPending = 0

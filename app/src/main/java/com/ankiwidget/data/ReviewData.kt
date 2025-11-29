@@ -20,7 +20,8 @@ data class WidgetConfig(
     val themeName: String = "material_you",
     val showStreak: Boolean = false,
     val selectedDeckId: Long? = null,  // null = track all decks
-    val selectedDeckName: String? = null  // null = "All Decks"
+    val selectedDeckName: String? = null,  // null = "All Decks"
+    val dayStartHour: Int = 4 // Hour when new day starts (0-23), default 4AM
 ) {
     companion object {
         const val PREFS_NAME = "AnkiWidgetPrefs"
@@ -28,5 +29,6 @@ data class WidgetConfig(
         const val KEY_SHOW_STREAK = "show_streak_"
         const val KEY_SELECTED_DECK = "selected_deck_"
         const val KEY_DECK_NAME = "deck_name_"
+        const val KEY_DAY_START = "day_start_"
     }
 }
