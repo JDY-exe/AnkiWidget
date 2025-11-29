@@ -138,6 +138,13 @@ class AnkiWidgetProvider : AppWidgetProvider() {
                 val views = RemoteViews(context.packageName, R.layout.widget_layout)
                 views.setImageViewBitmap(R.id.contribution_grid, gridBitmap)
                 
+                // Set background based on config
+                if (config.isFrosted) {
+                    views.setInt(R.id.widget_container, "setBackgroundResource", R.drawable.widget_background_frosted)
+                } else {
+                    views.setInt(R.id.widget_container, "setBackgroundResource", R.drawable.widget_background)
+                }
+                
                 // Set deck name or "All Decks" - hide on narrow widgets (< ~4 home screen columns)
                 // Typical home screen column is ~80dp, so 4 columns ≈ 320dp
                 if (widgetWidthDp >= 500) {
@@ -208,7 +215,8 @@ class AnkiWidgetProvider : AppWidgetProvider() {
             showStreak = prefs.getBoolean("${WidgetConfig.KEY_SHOW_STREAK}$appWidgetId", false),
             selectedDeckId = selectedDeckId,
             selectedDeckName = selectedDeckName,
-            dayStartHour = dayStartHour
+            dayStartHour = dayStartHour,
+            isFrosted = prefs.getBoolean("${WidgetConfig.KEY_IS_FROSTED}$appWidgetId", false)
         )
     }
     

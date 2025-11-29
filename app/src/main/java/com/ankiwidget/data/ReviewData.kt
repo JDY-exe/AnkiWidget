@@ -21,7 +21,8 @@ data class WidgetConfig(
     val showStreak: Boolean = false,
     val selectedDeckId: Long? = null,  // null = track all decks
     val selectedDeckName: String? = null,  // null = "All Decks"
-    val dayStartHour: Int = 4 // Hour when new day starts (0-23), default 4AM
+    val dayStartHour: Int = 4, // Hour when new day starts (0-23), default 4AM
+    val isFrosted: Boolean = false
 ) {
     companion object {
         const val PREFS_NAME = "AnkiWidgetPrefs"
@@ -30,5 +31,6 @@ data class WidgetConfig(
         const val KEY_SELECTED_DECK = "selected_deck_"
         const val KEY_DECK_NAME = "deck_name_"
         const val KEY_DAY_START = "day_start_"
+        const val KEY_IS_FROSTED = "is_frosted_"
     }
 }

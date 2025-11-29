@@ -116,6 +116,11 @@ class WidgetConfigActivity : AppCompatActivity() {
         binding.showStreakSwitch.setOnCheckedChangeListener { _, _ ->
             updatePreview()
         }
+
+        // Frosted glass toggle
+        binding.frostedGlassSwitch.setOnCheckedChangeListener { _, _ ->
+            updatePreview()
+        }
         
         // Save button
         binding.saveButton.setOnClickListener {
@@ -191,7 +196,8 @@ class WidgetConfigActivity : AppCompatActivity() {
             showStreak = binding.showStreakSwitch.isChecked,
             selectedDeckId = selectedDeckId,
             selectedDeckName = selectedDeckName,
-            dayStartHour = 4 // Default to 4AM for now
+            dayStartHour = 4, // Default to 4AM for now
+            isFrosted = binding.frostedGlassSwitch.isChecked
         )
     }
     
@@ -217,6 +223,7 @@ class WidgetConfigActivity : AppCompatActivity() {
                 remove("${WidgetConfig.KEY_DECK_NAME}$appWidgetId")
             }
             putInt("${WidgetConfig.KEY_DAY_START}$appWidgetId", config.dayStartHour)
+            putBoolean("${WidgetConfig.KEY_IS_FROSTED}$appWidgetId", config.isFrosted)
             apply()
         }
         

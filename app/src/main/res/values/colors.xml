@@ -4,4 +4,5 @@
     <color name="widget_background_color">@android:color/system_neutral2_50</color>
     <color name="widget_text_color">@android:color/system_neutral1_900</color>
     <color name="widget_surface_color">@android:color/system_neutral1_100</color>
+    <color name="widget_background_frosted_color">#DDFFFFFF</color>
 </resources>

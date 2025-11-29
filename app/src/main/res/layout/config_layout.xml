@@ -55,11 +55,19 @@
         </RadioGroup>
 
         <!-- Show Streak Toggle -->
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/show_streak_switch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/show_streak_label"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Frosted Glass Toggle -->
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/frosted_glass_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transparent Background"
             android:layout_marginBottom="24dp" />
 
         <!-- Deck Selection -->

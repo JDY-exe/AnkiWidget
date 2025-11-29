@@ -67,10 +67,22 @@ data class WidgetTheme(
                     context.getColor(android.R.color.system_neutral1_100) // Light background
                 }
                 
+                val colorIncomplete = if (isDark) {
+                    context.getColor(android.R.color.system_accent2_700) // Darker variant for incomplete
+                } else {
+                    context.getColor(android.R.color.system_accent2_100) // Lighter variant for incomplete
+                }
+
+                val colorNoData = if (isDark) {
+                    context.getColor(android.R.color.system_neutral2_800) // Dark neutral for empty
+                } else {
+                    context.getColor(android.R.color.system_neutral2_100) // Light neutral for empty
+                }
+                
                 WidgetTheme(
                     completedColor = colorPrimary,
-                    incompleteColor = adjustAlpha(colorPrimary, 0.2f),
-                    noDataColor = adjustAlpha(colorOnSurface, 0.08f),
+                    incompleteColor = colorIncomplete,
+                    noDataColor = colorNoData,
                     backgroundColor = adjustAlpha(colorSurface, 0.7f),
                     themeName = THEME_MATERIAL_YOU
                 )
