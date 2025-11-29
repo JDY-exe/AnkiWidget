@@ -119,7 +119,14 @@ class AnkiWidgetProvider : AppWidgetProvider() {
                 }
                 
                 // Get theme
-                val theme = WidgetTheme.getTheme(context, config.themeName)
+                val theme = WidgetTheme.getTheme(
+                    context, 
+                    config.themeName,
+                    config.customCompletedColor,
+                    config.customIncompleteColor,
+                    config.customBackgroundColor,
+                    config.customStreakColor
+                )
                 
                 // Calculate bitmap dimensions (always 7 rows)
                 val rows = WidgetConstants.ROWS
@@ -150,6 +157,7 @@ class AnkiWidgetProvider : AppWidgetProvider() {
                 if (widgetWidthDp >= 500) {
                     val displayName = config.selectedDeckName ?: "All Decks"
                     views.setTextViewText(R.id.app_name_text, displayName)
+                    views.setTextColor(R.id.app_name_text, theme.incompleteColor)
                     views.setViewVisibility(R.id.app_name_text, android.view.View.VISIBLE)
                 } else {
                     views.setViewVisibility(R.id.app_name_text, android.view.View.GONE)
@@ -216,7 +224,11 @@ class AnkiWidgetProvider : AppWidgetProvider() {
             selectedDeckId = selectedDeckId,
             selectedDeckName = selectedDeckName,
             dayStartHour = dayStartHour,
-            isFrosted = prefs.getBoolean("${WidgetConfig.KEY_IS_FROSTED}$appWidgetId", false)
+            isFrosted = prefs.getBoolean("${WidgetConfig.KEY_IS_FROSTED}$appWidgetId", false),
+            customCompletedColor = if (prefs.contains("${WidgetConfig.KEY_CUSTOM_COMPLETED}$appWidgetId")) prefs.getInt("${WidgetConfig.KEY_CUSTOM_COMPLETED}$appWidgetId", 0) else null,
+            customIncompleteColor = if (prefs.contains("${WidgetConfig.KEY_CUSTOM_INCOMPLETE}$appWidgetId")) prefs.getInt("${WidgetConfig.KEY_CUSTOM_INCOMPLETE}$appWidgetId", 0) else null,
+            customBackgroundColor = if (prefs.contains("${WidgetConfig.KEY_CUSTOM_BACKGROUND}$appWidgetId")) prefs.getInt("${WidgetConfig.KEY_CUSTOM_BACKGROUND}$appWidgetId", 0) else null,
+            customStreakColor = if (prefs.contains("${WidgetConfig.KEY_CUSTOM_STREAK}$appWidgetId")) prefs.getInt("${WidgetConfig.KEY_CUSTOM_STREAK}$appWidgetId", 0) else null
         )
     }
     

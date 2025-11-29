@@ -1,115 +1,88 @@
-# Anki Widget
 
+#  Anki Widget
+
+  
+### Preamble
 A minimal Android home screen widget that visualizes your Anki review completion history in a GitHub contribution-style graph. Each dot represents a day, showing whether you completed all your reviews.
 
-## Features
+**WARNING**: This widget is 100% vibe coded using Claude and Gemini. It may be extremely inefficient, drain your battery, bug out, or otherwise not work at all. I have no android app development experience, thus all issues/feature requests/PRs will be probably ignored. Please fork the project if you have any interest in adding more features. If you do not have a pixel 10, and the app isn't working, see FAQ on how to debug. 
+  
 
-- **📊 GitHub-Style Visualization**: Clean contribution graph showing review completion over time
-- **🎨 Material You Integration**: Automatically adapts to your Pixel's system colors and wallpaper
-- **⚙️ Customizable**: Choose from multiple themes, adjust time range (7-90 days), and configure appearance
-- **🔄 Auto-Updates**: Refreshes daily to stay current with your progress
-- **📱 Pixel-Optimized**: Built specifically for Pixel 10 with dynamic theming support
+###  Installation
 
-## Themes
+1. Install AnkiDroid from the Google Play Store.
 
-1. **Material You (Default)**: Dynamically adapts to your system wallpaper and color palette
-2. **GitHub Green**: Classic green contribution graph aesthetic
-3. **Monochrome**: Minimal black and white design
+2. Go to the **[Releases](../../releases)** page of this repository.
 
-## Installation
+3. Download the latest `.apk` file (e.g., `AnkiWidget-v1.0.apk`).
 
-### Prerequisites
-- Android 8.0 (API 26) or higher
-- AnkiDroid installed with review history
+4. Open the file on your Android device.
 
-### Building from Source
+-  *Note*: You may need to allow installation from "Unknown Sources" in your browser/file manager settings.
 
-1. Clone this repository
-2. Open in Android Studio
-3. Build and run:
-   ```bash
-   ./gradlew assembleDebug
-   ```
-4. Install the APK on your device
-5. Add the widget to your home screen
-6. Configure your preferences
+5. Tap **Install**.
 
-### Adding the Widget
+6.  **Important**: Go to Apps > Anki Widget > Permissions > Additional permissions > **Enable** "Read and write to the AnkiDroid database".
+7. **Important**: Go to AnkiDroid > Settings > Advanced > Plugins > **Enaable AnkiDroid API**
+
+###  Adding the Widget
+
 
 1. Long-press on your home screen
+
 2. Tap "Widgets"
-3. Find and select "Anki Widget"
+
+3. Find and select "Anki Widget", click "Add"
+
 4. Drag to desired location
-5. Configure theme, days to display, and other options
+
+5. Configure theme, deck, and other options
+
 6. Tap "Add Widget"
 
-## Configuration Options
+  
 
-- **Theme**: Material You, GitHub Green, or Monochrome
-- **Days to Display**: 7, 14, 30, 60, or 90 days
-- **Show Streak**: Optional streak counter below the grid
-- **Tap to Refresh**: Tap the widget to manually refresh data
+##  Configuration Options
 
-## How It Works
+  
 
-The widget reads your review history from AnkiDroid's local database and generates a visual grid where:
-- **Colored dots**: Days where you completed your reviews
-- **Gray dots**: Days with incomplete or no reviews
-- **Grid layout**: 7 rows (days of the week) × variable columns (time range)
+-  **Theme**: Material You, GitHub Green, Monochrome, or Custom
 
-## Technical Details
+-  **Show Streak**: Optional streak counter below the grid, show which deck the streak is for.
 
-- **Language**: Kotlin
-- **Min SDK**: 26 (Android 8.0)
-- **Target SDK**: 34 (Android 14)
-- **Dependencies**: Material 3, AndroidX, Kotlin Coroutines
-- **Architecture**: Widget Provider + Repository pattern for data access
+-  **Deck**: Select which deck to show the streak for. You can also select "All Decks" to show the streak for all decks combined.
 
-## Project Structure
+-  **Transparent Background**: Optional transparent background for the widget.
 
-```
-app/src/main/java/com/ankiwidget/
-├── AnkiWidgetProvider.kt          # Main widget provider
-├── config/
-│   └── WidgetConfigActivity.kt    # Configuration UI
-├── data/
-│   ├── AnkiRepository.kt          # AnkiDroid data access
-│   └── ReviewData.kt              # Data models
-├── renderer/
-│   ├── ContributionGridRenderer.kt # Grid bitmap generation
-│   └── WidgetTheme.kt             # Theme definitions
-└── receiver/
-    └── DailyUpdateReceiver.kt     # Scheduled updates
-```
+  
 
-## Privacy
+##  FAQ
+**Can the widget access historical data?**
+No, it can only read today's data, and store history in its own database. This is because AnkiDroid does not open up historical log data for other apps to read. This means that if the widget fails to refresh on time, or otherwise doesn't log today's data correctly, there is no way to get your streak back. I am very sorry. 
 
-- All data processing happens locally on your device
-- No network requests or data transmission
-- Only reads AnkiDroid's review database (read-only access)
+**When does the day reset?**
+4 AM local time. 
 
-## Known Limitations
+**Privacy?**
+All data processing happens locally on your device, only reads AnkiDroid's review database (read-only access)
 
-- Requires AnkiDroid to be installed
-- Needs storage permissions to access Anki database
-- Currently shows mock data if AnkiDroid database is not accessible (for development/testing)
+**How is completion determined?** 
+When your deck reaches 0/0/0 (No new cards, no cards schedule for review) for that day.
 
-## Future Enhancements
+**Tracking progress from other Anki platforms?**
+If you finished today's reviews on another device, you will need to sync that data to AnkiWeb, then sync the data to AnkiDroid. As long as AnkiDroid has the updated data locally, the widget will properly pull from it. 
 
-- [ ] More granular completion criteria (e.g., specific deck targets)
-- [ ] Custom color picker for themes
-- [ ] Different grid layouts (e.g., monthly calendar view)
-- [ ] Export/share widget screenshots
-- [ ] Integration with AnkiWeb for cross-device sync
+**How to refresh data?**
+Tap the widget to refresh data
 
-## License
+**How to debug?**
+If the widget displays random/placeholder data, it's likely you did not enable the permissions for it to read AnkiDroid's database data. 
 
-MIT License - feel free to modify and distribute
+Otherwise, copy paste this repository's link into ChatGPT or your LLM of choice, and ask it to debug for you. 
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
 
 ---
 
-**Note**: This widget is designed and optimized for Pixel devices running Android 12+ to take full advantage of Material You dynamic theming. It will work on other Android devices with fallback themes.
+Created with <3, Google Antigravity, Claude, Gemini, and pure vibes by JDY.  
+
+**Note**: This widget is designed and optimized for Pixel devices running Android 12+ to take full advantage of Material You dynamic theming. 

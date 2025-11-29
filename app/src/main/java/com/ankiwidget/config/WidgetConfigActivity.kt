@@ -108,7 +108,12 @@ class WidgetConfigActivity : AppCompatActivity() {
     
     private fun setupListeners() {
         // Theme selection
-        binding.themeGroup.setOnCheckedChangeListener { _, _ ->
+        binding.themeGroup.setOnCheckedChangeListener { _, checkedId ->
+            binding.customColorsContainer.visibility = if (checkedId == R.id.theme_custom) {
+                android.view.View.VISIBLE
+            } else {
+                android.view.View.GONE
+            }
             updatePreview()
         }
         
@@ -141,7 +146,14 @@ class WidgetConfigActivity : AppCompatActivity() {
         scope.launch {
             try {
                 val config = getCurrentConfig()
-                val theme = WidgetTheme.getTheme(this@WidgetConfigActivity, config.themeName)
+                val theme = WidgetTheme.getTheme(
+                    this@WidgetConfigActivity, 
+                    config.themeName,
+                    config.customCompletedColor,
+                    config.customIncompleteColor,
+                    config.customBackgroundColor,
+                    config.customStreakColor
+                )
                 val repository = AnkiRepository(this@WidgetConfigActivity)
                 
                 // Calculate days for preview (use 8 columns as medium size)
@@ -187,6 +199,7 @@ class WidgetConfigActivity : AppCompatActivity() {
         val themeName = when (binding.themeGroup.checkedRadioButtonId) {
             R.id.theme_github -> WidgetTheme.THEME_GITHUB
             R.id.theme_monochrome -> WidgetTheme.THEME_MONOCHROME
+            R.id.theme_custom -> WidgetTheme.THEME_CUSTOM
             else -> WidgetTheme.THEME_MATERIAL_YOU
         }
         
@@ -197,8 +210,20 @@ class WidgetConfigActivity : AppCompatActivity() {
             selectedDeckId = selectedDeckId,
             selectedDeckName = selectedDeckName,
             dayStartHour = 4, // Default to 4AM for now
-            isFrosted = binding.frostedGlassSwitch.isChecked
+            isFrosted = binding.frostedGlassSwitch.isChecked,
+            customCompletedColor = parseColor(binding.colorCompletedInput.text.toString()),
+            customIncompleteColor = parseColor(binding.colorIncompleteInput.text.toString()),
+            customBackgroundColor = parseColor(binding.colorBackgroundInput.text.toString()),
+            customStreakColor = null // Not implemented in UI yet, but needed for data class
         )
+    }
+
+    private fun parseColor(hex: String): Int? {
+        return try {
+            if (hex.isNotEmpty()) android.graphics.Color.parseColor(hex) else null
+        } catch (e: Exception) {
+            null
+        }
     }
     
     /**
@@ -224,6 +249,13 @@ class WidgetConfigActivity : AppCompatActivity() {
             }
             putInt("${WidgetConfig.KEY_DAY_START}$appWidgetId", config.dayStartHour)
             putBoolean("${WidgetConfig.KEY_IS_FROSTED}$appWidgetId", config.isFrosted)
+            
+            // Save custom colors
+            if (config.customCompletedColor != null) putInt("${WidgetConfig.KEY_CUSTOM_COMPLETED}$appWidgetId", config.customCompletedColor)
+            if (config.customIncompleteColor != null) putInt("${WidgetConfig.KEY_CUSTOM_INCOMPLETE}$appWidgetId", config.customIncompleteColor)
+            if (config.customBackgroundColor != null) putInt("${WidgetConfig.KEY_CUSTOM_BACKGROUND}$appWidgetId", config.customBackgroundColor)
+            if (config.customStreakColor != null) putInt("${WidgetConfig.KEY_CUSTOM_STREAK}$appWidgetId", config.customStreakColor)
+            
             apply()
         }
         

@@ -22,7 +22,11 @@ data class WidgetConfig(
     val selectedDeckId: Long? = null,  // null = track all decks
     val selectedDeckName: String? = null,  // null = "All Decks"
     val dayStartHour: Int = 4, // Hour when new day starts (0-23), default 4AM
-    val isFrosted: Boolean = false
+    val isFrosted: Boolean = false,
+    val customCompletedColor: Int? = null,
+    val customIncompleteColor: Int? = null,
+    val customBackgroundColor: Int? = null,
+    val customStreakColor: Int? = null
 ) {
     companion object {
         const val PREFS_NAME = "AnkiWidgetPrefs"
@@ -32,5 +36,9 @@ data class WidgetConfig(
         const val KEY_DECK_NAME = "deck_name_"
         const val KEY_DAY_START = "day_start_"
         const val KEY_IS_FROSTED = "is_frosted_"
+        const val KEY_CUSTOM_COMPLETED = "custom_completed_"
+        const val KEY_CUSTOM_INCOMPLETE = "custom_incomplete_"
+        const val KEY_CUSTOM_BACKGROUND = "custom_bg_"
+        const val KEY_CUSTOM_STREAK = "custom_streak_"
     }
 }

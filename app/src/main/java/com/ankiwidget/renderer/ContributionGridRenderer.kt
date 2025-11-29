@@ -84,7 +84,7 @@ class ContributionGridRenderer(
                 
                 // Determine color based on review status
                 paint.color = when {
-                    status == null -> theme.noDataColor
+                    status == null -> theme.incompleteColor // Treat no data as incomplete
                     status.allReviewsCompleted -> theme.completedColor
                     else -> theme.incompleteColor
                 }

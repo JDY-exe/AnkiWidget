@@ -10,5 +10,5 @@ object WidgetConstants {
     
     // Day limits
     const val MIN_DAYS = 14  // 2 weeks minimum
-    const val MAX_DAYS = 90  // ~13 weeks maximum
+    const val MAX_DAYS = 365  // ~1 year maximum
 }

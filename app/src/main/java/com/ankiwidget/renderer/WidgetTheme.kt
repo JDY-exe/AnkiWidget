@@ -20,15 +20,24 @@ data class WidgetTheme(
         const val THEME_MATERIAL_YOU = "material_you"
         const val THEME_GITHUB = "github"
         const val THEME_MONOCHROME = "monochrome"
+        const val THEME_CUSTOM = "custom"
 
         /**
          * Get theme based on preference
          */
-        fun getTheme(context: Context, themeName: String): WidgetTheme {
+        fun getTheme(
+            context: Context, 
+            themeName: String,
+            customCompleted: Int? = null,
+            customIncomplete: Int? = null,
+            customBackground: Int? = null,
+            customStreak: Int? = null
+        ): WidgetTheme {
             return when (themeName) {
                 THEME_MATERIAL_YOU -> getMaterialYouTheme(context)
                 THEME_GITHUB -> getGitHubTheme(context)
                 THEME_MONOCHROME -> getMonochromeTheme(context)
+                THEME_CUSTOM -> getCustomTheme(context, customCompleted, customIncomplete, customBackground, customStreak)
                 else -> getMaterialYouTheme(context)
             }
         }
@@ -144,6 +153,28 @@ data class WidgetTheme(
                     themeName = THEME_MONOCHROME
                 )
             }
+        }
+
+        /**
+         * Custom theme with user-defined colors
+         */
+        private fun getCustomTheme(
+            context: Context,
+            customCompleted: Int?,
+            customIncomplete: Int?,
+            customBackground: Int?,
+            customStreak: Int?
+        ): WidgetTheme {
+            // Default to Material You colors if custom ones aren't provided
+            val defaultTheme = getMaterialYouTheme(context)
+            
+            return WidgetTheme(
+                completedColor = customCompleted ?: defaultTheme.completedColor,
+                incompleteColor = customIncomplete ?: defaultTheme.incompleteColor,
+                noDataColor = customIncomplete ?: defaultTheme.noDataColor, // Use incomplete color for no data
+                backgroundColor = customBackground ?: defaultTheme.backgroundColor,
+                themeName = THEME_CUSTOM
+            )
         }
 
         /**
