@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background_color">@android:color/system_neutral2_50</color>
+    <color name="widget_surface_color">@android:color/system_neutral1_100</color>
+    <color name="widget_text_color">@android:color/system_neutral1_900</color>
+    <string name="app_name">Anki Widget</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="config_title">Configure Widget</string>
+    <string name="contribution_grid_description">Anki review completion grid</string>
+    <string name="no_data">No Anki data found</string>
+    <string name="permission_required">Storage permission required</string>
+    <string name="save_button">Add Widget</string>
+    <string name="show_streak_label">Show Streak</string>
+    <string name="streak_format">%d DAY STREAK</string>
+    <string name="theme_github">GitHub Green</string>
+    <string name="theme_label">Theme</string>
+    <string name="theme_material_you">Material You (Dynamic)</string>
+    <string name="theme_monochrome">Monochrome</string>
+    <string name="widget_description">Track your Anki review completion with a GitHub-style contribution graph</string>
+</resources>

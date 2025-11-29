@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/layout_config_layout.xml.flat",
+        "source": "com.ankiwidget.app-main-35:/layout/config_layout.xml"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/drawable_preview_background.xml.flat",
+        "source": "com.ankiwidget.app-main-35:/drawable/preview_background.xml"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/drawable_widget_background.xml.flat",
+        "source": "com.ankiwidget.app-main-35:/drawable/widget_background.xml"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/drawable_widget_preview.png.flat",
+        "source": "com.ankiwidget.app-main-35:/drawable/widget_preview.png"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.ankiwidget.app-main-35:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/layout_widget_layout.xml.flat",
+        "source": "com.ankiwidget.app-main-35:/layout/widget_layout.xml"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "com.ankiwidget.app-main-35:/mipmap-xxxhdpi/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.ankiwidget.app-merged_res-33:/xml_widget_info.xml.flat",
+        "source": "com.ankiwidget.app-main-35:/xml/widget_info.xml"
+    }
+]

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/widget_background">
+
+    <!-- Contribution Grid Image (rendered programmatically) -->
+    <ImageView
+        android:id="@+id/contribution_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/contribution_grid_description" />
+
+    <!-- Stats row at bottom -->
+    <LinearLayout
+        android:id="@+id/stats_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp">
+        
+        <!-- Streak on left -->
+        <TextView
+            android:id="@+id/streak_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="123 DAY STREAK"
+            android:textSize="11sp"
+            android:textColor="@color/widget_text_color"
+            android:fontFamily="monospace"
+            android:gravity="start" />
+        
+        <!-- App name on right -->
+        <TextView
+            android:id="@+id/app_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="AnkiTracker"
+            android:textSize="11sp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:fontFamily="monospace"
+            android:gravity="end" />
+            
+    </LinearLayout>
+
+</LinearLayout>

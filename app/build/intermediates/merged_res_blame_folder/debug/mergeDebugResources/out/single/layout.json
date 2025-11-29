@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.ankiwidget.app-mergeDebugResources-32:/layout/config_layout.xml",
+        "source": "com.ankiwidget.app-main-35:/layout/config_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\jdyjo\\.gradle\\daemon\\8.4\\com.ankiwidget.app-mergeDebugResources-32:\\layout\\config_layout.xml",
+        "source": "C:\\Users\\jdyjo\\.gradle\\daemon\\8.4\\com.ankiwidget.app-main-35:\\layout\\config_layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\jdyjo\\.gradle\\daemon\\8.4\\com.ankiwidget.app-mergeDebugResources-32:\\layout\\widget_layout.xml",
+        "source": "C:\\Users\\jdyjo\\.gradle\\daemon\\8.4\\com.ankiwidget.app-main-35:\\layout\\widget_layout.xml"
+    }
+]
